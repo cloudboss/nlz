@@ -153,8 +153,8 @@ pub const Socket = struct {
     pub fn execute(self: *Socket, request: []const u8, allocator: std.mem.Allocator) Error![]u8 {
         try self.send(request);
 
-        var response = std.ArrayList(u8).init(allocator);
-        errdefer response.deinit();
+        var response: std.ArrayListUnmanaged(u8) = .empty;
+        errdefer response.deinit(allocator);
 
         var recv_buf: [RECV_BUFFER_SIZE]u8 = undefined;
 
@@ -171,26 +171,26 @@ pub const Socket = struct {
                         return Error.NetlinkError;
                     }
                     // err == 0 means ACK, we're done
-                    return response.toOwnedSlice() catch return Error.BufferTooSmall;
+                    return response.toOwnedSlice(allocator) catch return Error.BufferTooSmall;
                 }
 
                 // Check for end of dump
                 if (msg.isDone()) {
-                    return response.toOwnedSlice() catch return Error.BufferTooSmall;
+                    return response.toOwnedSlice(allocator) catch return Error.BufferTooSmall;
                 }
 
                 // Append the entire message (header + payload) to response
                 const msg_bytes = recv_buf[iter.offset - message.align4(msg.header.len) ..][0..msg.header.len];
-                response.appendSlice(msg_bytes) catch return Error.BufferTooSmall;
+                response.appendSlice(allocator, msg_bytes) catch return Error.BufferTooSmall;
 
                 // If not multipart, we're done after this message
                 if (!msg.isMulti()) {
-                    return response.toOwnedSlice() catch return Error.BufferTooSmall;
+                    return response.toOwnedSlice(allocator) catch return Error.BufferTooSmall;
                 }
             }
         }
 
-        return response.toOwnedSlice() catch return Error.BufferTooSmall;
+        return response.toOwnedSlice(allocator) catch return Error.BufferTooSmall;
     }
 
     // =========================================================================
