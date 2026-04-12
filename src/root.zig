@@ -35,9 +35,13 @@
 const std = @import("std");
 
 const socket = @import("socket.zig");
+const monitor = @import("monitor.zig");
 
 /// Netlink socket for rtnetlink communication.
 pub const Socket = socket.Socket;
+
+/// Read-only netlink subscription for link state change notifications.
+pub const LinkMonitor = monitor.LinkMonitor;
 
 /// Iterator over link messages returned by `Socket.getLinks()`.
 pub const LinkIterator = socket.LinkIterator;

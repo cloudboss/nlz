@@ -37,6 +37,38 @@ pub const Type = struct {
     pub const GETROUTE: u16 = 26;
 };
 
+/// rtnetlink multicast groups (RTMGRP_*), as bitmasks for sockaddr_nl.nl_groups.
+///
+/// Used when binding a netlink socket to receive multicast notifications for
+/// link state, address, or route changes. Pass one or more of these ORed
+/// together to `LinkMonitor.open` (or to a bind with `nl_groups` set).
+pub const RTMGRP = struct {
+    /// Link (interface) state changes: up/down, carrier, rename.
+    pub const LINK: u32 = 1;
+    /// Notifications from this socket's own changes.
+    pub const NOTIFY: u32 = 2;
+    /// Neighbor table changes (ARP/ND).
+    pub const NEIGH: u32 = 4;
+    /// Traffic control changes.
+    pub const TC: u32 = 8;
+    /// IPv4 address changes.
+    pub const IPV4_IFADDR: u32 = 0x10;
+    /// IPv4 multicast route changes.
+    pub const IPV4_MROUTE: u32 = 0x20;
+    /// IPv4 unicast route changes.
+    pub const IPV4_ROUTE: u32 = 0x40;
+    /// IPv4 firewall rule changes.
+    pub const IPV4_RULE: u32 = 0x80;
+    /// IPv6 address changes.
+    pub const IPV6_IFADDR: u32 = 0x100;
+    /// IPv6 multicast route changes.
+    pub const IPV6_MROUTE: u32 = 0x200;
+    /// IPv6 unicast route changes.
+    pub const IPV6_ROUTE: u32 = 0x400;
+    /// IPv6 firewall rule changes.
+    pub const IPV6_IFINFO: u32 = 0x800;
+};
+
 /// Address families (AF_*).
 pub const AF = struct {
     /// Unspecified address family.
