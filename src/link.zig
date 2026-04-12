@@ -353,6 +353,15 @@ pub const LinkMessageBuilder = struct {
         return self;
     }
 
+    /// Clear the IFF_UP flag to bring the interface down.
+    pub fn setDown(self: *LinkMessageBuilder) *LinkMessageBuilder {
+        const ifinfo_offset = message.Header.SIZE;
+        const ifinfo = mem.bytesAsValue(IfInfoMsg, self.buffer[ifinfo_offset..][0..IfInfoMsg.SIZE]);
+        ifinfo.flags &= ~rtnetlink.IFF.UP;
+        ifinfo.change |= rtnetlink.IFF.UP;
+        return self;
+    }
+
     /// Set the interface name.
     pub fn setName(self: *LinkMessageBuilder, name: []const u8) *LinkMessageBuilder {
         self.addAttrString(Attr.IFNAME, name);

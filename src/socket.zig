@@ -212,6 +212,14 @@ pub const Socket = struct {
         allocator.free(response);
     }
 
+    /// Bring an interface down.
+    pub fn setLinkDown(self: *Socket, ifindex: u32, allocator: std.mem.Allocator) Error!void {
+        var builder = LinkMessageBuilder.setLink(ifindex);
+        _ = builder.setDown();
+        const response = try self.execute(builder.build(), allocator);
+        allocator.free(response);
+    }
+
     /// Rename an interface.
     pub fn setLinkName(self: *Socket, ifindex: u32, name: []const u8, allocator: std.mem.Allocator) Error!void {
         var builder = LinkMessageBuilder.setLink(ifindex);
