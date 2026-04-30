@@ -88,7 +88,7 @@ pub const LinkMonitor = struct {
 
     /// Close the underlying socket.
     pub fn close(self: *LinkMonitor) void {
-        posix.close(self.fd);
+        _ = linux.close(self.fd);
     }
 
     /// Block up to `timeout_ms` waiting for the next link notification.
@@ -155,9 +155,9 @@ pub const LinkMonitor = struct {
         ifindex: u32,
         total_timeout_ms: i32,
     ) Error!void {
-        const start = std.time.milliTimestamp();
+        const start = monotonicMs();
         while (true) {
-            const elapsed = std.time.milliTimestamp() - start;
+            const elapsed = monotonicMs() - start;
             if (elapsed >= total_timeout_ms) return Error.Timeout;
             const remaining_ms: i32 = @intCast(@as(i64, total_timeout_ms) - elapsed);
 
@@ -166,6 +166,14 @@ pub const LinkMonitor = struct {
         }
     }
 };
+
+/// Monotonic milliseconds since some unspecified epoch. Used for relative
+/// deadlines so we're immune to wall-clock jumps.
+fn monotonicMs() i64 {
+    var ts: linux.timespec = undefined;
+    _ = linux.clock_gettime(.MONOTONIC, &ts);
+    return @as(i64, ts.sec) * std.time.ms_per_s + @divTrunc(ts.nsec, std.time.ns_per_ms);
+}
 
 // =============================================================================
 // Tests

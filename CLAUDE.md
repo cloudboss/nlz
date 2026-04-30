@@ -4,7 +4,7 @@ A minimal rtnetlink library for Zig, designed for network interface configuratio
 
 ## Project Overview
 
-- **Language**: Zig 0.15.0+
+- **Language**: Zig 0.16.0+
 - **Target**: Linux only (uses netlink sockets)
 - **Purpose**: Network interface, address, and route configuration via netlink
 

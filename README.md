@@ -137,7 +137,7 @@ pub fn main() !void {
 
 - Linux kernel 2.6.14+ (netlink sockets)
 - CAP_NET_ADMIN capability for modifying network configuration
-- Zig 0.15.0+
+- Zig 0.16.0+
 
 ## License
 

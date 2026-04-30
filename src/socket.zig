@@ -104,7 +104,7 @@ pub const Socket = struct {
 
     /// Close the socket.
     pub fn close(self: *Socket) void {
-        posix.close(self.fd);
+        _ = linux.close(self.fd);
     }
 
     fn nextSeq(self: *Socket) u32 {
