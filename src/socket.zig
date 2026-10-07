@@ -153,7 +153,7 @@ pub const Socket = struct {
     pub fn execute(self: *Socket, request: []const u8, allocator: std.mem.Allocator) Error![]u8 {
         try self.send(request);
 
-        var response: std.ArrayListUnmanaged(u8) = .empty;
+        var response: std.ArrayList(u8) = .empty;
         errdefer response.deinit(allocator);
 
         var recv_buf: [RECV_BUFFER_SIZE]u8 = undefined;

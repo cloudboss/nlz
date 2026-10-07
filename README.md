@@ -33,7 +33,7 @@ const std = @import("std");
 const nlz = @import("nlz");
 
 pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    var gpa = std.heap.SafeAllocator.init(std.heap.page_allocator, .{});
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
@@ -135,9 +135,9 @@ pub fn main() !void {
 
 ## Requirements
 
-- Linux kernel 2.6.14+ (netlink sockets)
+- Linux kernel 5.10+ (Zig standard library requirement)
 - CAP_NET_ADMIN capability for modifying network configuration
-- Zig 0.16.0+
+- Zig 0.17.0+
 
 ## License
 
